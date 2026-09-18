@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS IX Bahasa Inggris - SMP Dhammasoka Banjarmasin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        heading: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#6C5CE7',
+                            pink: '#FD79A8',
+                            blue: '#0984E3',
+                            yellow: '#FDCB6E',
+                            green: '#00B894',
+                            dark: '#2D3436'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            min-height: 100vh;
+            user-select: none; /* Mencegah seleksi teks */
+        }
+        .heading-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(108, 92, 231, 0.6);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(108, 92, 231, 0.9);
+        }
+        /* Card Pop Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        /* Card Flip Animation for Yellow & Red Cards */
+        @keyframes cardShow {
+            0% { transform: rotateY(90deg) scale(0.5); opacity: 0; }
+            100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+        }
+        .animate-card {
+            animation: cardShow 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased flex flex-col justify-between min-h-screen" oncontextmenu="return false;">
+
+    <!-- Header App -->
+    <header class="bg-white/90 backdrop-blur-md border-b-4 border-yellow-400 shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center shadow-md text-white font-bold text-xl heading-font border-2 border-white">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-lg md:text-xl text-indigo-900 leading-tight">
+                        SMP DHAMMASOKA BANJARMASIN
+                    </h1>
+                    <p class="text-xs md:text-sm text-indigo-600 font-semibold">
+                        Asesmen Tengah Semester (ATS) IX - Bahasa Inggris Ganjil
+                    </p>
+                </div>
+            </div>
+
+            <!-- Header Info (Tampil saat game berlangsung) -->
+            <div id="header-info" class="hidden flex items-center gap-4 bg-indigo-50 px-4 py-2 rounded-2xl border-2 border-indigo-200">
+                <div class="text-right text-xs md:text-sm">
+                    <span class="block text-gray-800 font-bold" id="user-display-name">Siswa</span>
+                    <span class="inline-block px-2 py-0.5 bg-indigo-600 text-white rounded-full font-bold text-xs" id="user-display-class">Kelas 9</span>
+                </div>
+                <!-- Status Pelanggaran Badge -->
+                <div id="violation-badge" class="hidden flex items-center bg-amber-100 border-2 border-amber-400 text-amber-900 px-3 py-1.5 rounded-xl font-bold text-xs">
+                    <i class="fas fa-exclamation-triangle text-amber-600 mr-1.5"></i>
+                    <span>Pelanggaran: <strong id="violation-count-text">0</strong>/2</span>
+                </div>
+                <!-- Timer Box -->
+                <div class="flex items-center bg-amber-100 border-2 border-amber-400 text-amber-900 px-3 py-1.5 rounded-xl font-mono font-bold text-base md:text-lg shadow-inner">
+                    <i class="far fa-clock mr-2 text-amber-600 animate-pulse"></i>
+                    <span id="timer-display">90:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex justify-center items-center">
+
+        <!-- 1. LOGIN / WELCOME SCREEN -->
+        <section id="login-screen" class="w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-indigo-400 animate-pop">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl shadow-lg mb-3 transform rotate-3 hover:rotate-0 transition-transform">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h2 class="font-heading text-2xl md:text-3xl font-bold text-indigo-950">Selamat Datang!</h2>
+                <p class="text-sm text-gray-600 mt-1">Masukkan data diri dan Passcode dari Guru untuk memulai ujian game.</p>
+            </div>
+
+            <form id="form-login" class="space-y-4" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-sm font-bold text-indigo-900 mb-1" for="input-name">
+                        <i class="fas fa-user mr-1 text-indigo-500"></i> Nama Lengkap Siswa
+                    </label>
+                    <input type="text" id="input-name" required placeholder="Contoh: Ananda Pratama" 
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-base font-semibold transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-indigo-900 mb-1" for="input-class">
+                        <i class="fas fa-school mr-1 text-indigo-500"></i> Kelas
+                    </label>
+                    <select id="input-class" required 
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-base font-semibold bg-white transition-all">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="9A">Kelas 9A</option>
+                        <option value="9B">Kelas 9B</option>
+                        <option value="9C">Kelas 9C</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-indigo-900 mb-1" for="input-passcode">
+                        <i class="fas fa-key mr-1 text-indigo-500"></i> Passcode Masuk
+                    </label>
+                    <input type="password" id="input-passcode" required placeholder="Masukkan Passcode..." 
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-base font-semibold transition-all">
+                </div>
+
+                <!-- Error Message -->
+                <div id="login-error" class="hidden p-3 bg-red-100 border-2 border-red-400 text-red-700 rounded-2xl text-xs md:text-sm font-bold flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle text-lg"></i>
+                    <span id="login-error-text">Passcode salah! Silakan coba lagi.</span>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-heading font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transform active:scale-95 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-play"></i> Mulai Asesmen
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center text-xs text-gray-500 border-t pt-4">
+                <p><i class="fas fa-shield-alt text-amber-500 mr-1"></i> Mode Pengawasan Aktif: Pelanggaran 1 = Kartu Kuning, Pelanggaran 2 = Kartu Merah (Reset Ujian).</p>
+            </div>
+        </section>
+
+        <!-- 2. QUIZ / ASSESSMENT SCREEN -->
+        <section id="quiz-screen" class="hidden w-full max-w-6xl grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Left/Main Column: Questions Card -->
+            <div class="lg:col-span-3 flex flex-col space-y-4">
+                
+                <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-indigo-300 relative">
+                    
+                    <!-- Progress Bar Header -->
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold text-xs md:text-sm">
+                            Soal <span id="current-q-num">1</span> dari 50
+                        </span>
+                        <button onclick="toggleGridModal()" class="lg:hidden px-3 py-1 bg-amber-400 hover:bg-amber-500 text-indigo-950 font-bold rounded-xl text-xs flex items-center gap-1 shadow">
+                            <i class="fas fa-th"></i> Daftar Soal
+                        </button>
+                    </div>
+
+                    <!-- Question Context Banner (Reading Text / Dialogue Context) -->
+                    <div id="question-context-box" class="hidden mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl text-xs md:text-sm leading-relaxed text-gray-800 shadow-inner">
+                        <div class="font-bold text-amber-800 mb-1 flex items-center gap-1">
+                            <i class="fas fa-book-open"></i> <span id="question-context-title">Petunjuk Soal</span>
+                        </div>
+                        <div id="question-context-body" class="whitespace-pre-line font-medium"></div>
+                    </div>
+
+                    <!-- Question Image (If Available) -->
+                    <div id="question-image-box" class="hidden mb-4 text-center">
+                        <img id="question-image" src="" alt="Gambar Soal" class="max-h-72 mx-auto rounded-2xl shadow-md border-2 border-indigo-100 object-contain">
+                    </div>
+
+                    <!-- Question Text -->
+                    <div class="mb-6">
+                        <h3 id="question-text" class="text-base md:text-lg font-bold text-gray-900 leading-snug">
+                            Loading question...
+                        </h3>
+                    </div>
+
+                    <!-- Options List -->
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options generated dynamically -->
+                    </div>
+
+                    <!-- Navigation Controls -->
+                    <div class="flex justify-between items-center border-t pt-4">
+                        <button id="btn-prev" onclick="navigateQuestion(-1)" class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-2xl transition-all flex items-center gap-2">
+                            <i class="fas fa-arrow-left"></i> Sebelumnya
+                        </button>
+
+                        <button id="btn-next" onclick="navigateQuestion(1)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg transition-all flex items-center gap-2">
+                            Selanjutnya <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Column: Question Grid Navigation (Desktop) -->
+            <div class="hidden lg:block lg:col-span-1">
+                <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-4 border-indigo-300 sticky top-24">
+                    <h4 class="font-heading font-bold text-indigo-900 text-center mb-3 text-base flex items-center justify-center gap-2">
+                        <i class="fas fa-th"></i> Navigasi Soal
+                    </h4>
+                    
+                    <div id="question-grid-desktop" class="grid grid-cols-5 gap-2 max-h-96 overflow-y-auto p-1">
+                        <!-- 1-50 Question Buttons -->
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t text-xs space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-md bg-emerald-500 inline-block"></span> Sudah Dijawab
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-md bg-gray-200 border border-gray-400 inline-block"></span> Belum Dijawab
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-md bg-indigo-600 inline-block"></span> Soal Aktif
+                        </div>
+                    </div>
+
+                    <button onclick="confirmSubmitModal()" class="w-full mt-4 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-heading font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle"></i> Selesai & Kirim
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 3. RESULT / ENDING SCREEN -->
+        <section id="result-screen" class="hidden w-full max-w-3xl bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-emerald-400 animate-pop">
+            
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center text-4xl shadow-inner mb-3">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h2 class="font-heading text-3xl font-bold text-emerald-950">Hasil Asesmen ATS</h2>
+                <p class="text-sm text-gray-600">Terima kasih telah menyelesaikan ujian dengan baik!</p>
+            </div>
+
+            <!-- Identity Box -->
+            <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 mb-6 flex flex-wrap justify-between items-center gap-2">
+                <div>
+                    <p class="text-xs text-indigo-500 font-bold uppercase">Nama Siswa</p>
+                    <p class="text-lg font-bold text-indigo-950" id="res-name">-</p>
+                </div>
+                <div>
+                    <p class="text-xs text-indigo-500 font-bold uppercase">Kelas</p>
+                    <p class="text-lg font-bold text-indigo-950" id="res-class">-</p>
+                </div>
+                <div>
+                    <p class="text-xs text-indigo-500 font-bold uppercase">Waktu Selesai</p>
+                    <p class="text-sm font-bold text-gray-700" id="res-time">-</p>
+                </div>
+            </div>
+
+            <!-- Score Cards Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl p-4 shadow-md">
+                    <p class="text-xs opacity-90 font-bold">SKOR AKHIR</p>
+                    <p class="text-3xl font-heading font-extrabold mt-1" id="res-score">0</p>
+                </div>
+                <div class="bg-emerald-500 text-white rounded-2xl p-4 shadow-md">
+                    <p class="text-xs opacity-90 font-bold">BENAR</p>
+                    <p class="text-3xl font-heading font-extrabold mt-1" id="res-correct">0</p>
+                </div>
+                <div class="bg-rose-500 text-white rounded-2xl p-4 shadow-md">
+                    <p class="text-xs opacity-90 font-bold">SALAH</p>
+                    <p class="text-3xl font-heading font-extrabold mt-1" id="res-wrong">0</p>
+                </div>
+                <div class="bg-amber-500 text-white rounded-2xl p-4 shadow-md">
+                    <p class="text-xs opacity-90 font-bold">PELANGGARAN</p>
+                    <p class="text-3xl font-heading font-extrabold mt-1" id="res-violations">0</p>
+                </div>
+            </div>
+
+            <!-- Status pengiriman GAS -->
+            <div id="gas-status" class="mb-6 p-3 rounded-xl text-center font-bold text-sm bg-blue-50 border border-blue-200 text-blue-800">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Mengirimkan data skor ke Google Spreadsheet...
+            </div>
+
+            <!-- List of Incorrect Questions -->
+            <div class="mb-6">
+                <h4 class="font-heading font-bold text-gray-900 mb-2 flex items-center gap-2">
+                    <i class="fas fa-times-circle text-rose-500"></i> Evaluation (Nomor Soal Dijawab Salah):
+                </h4>
+                <div id="wrong-questions-box" class="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 max-h-40 overflow-y-auto text-sm text-gray-700 leading-relaxed">
+                    Tidak ada kesalahan. Perfect!
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="location.reload()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-heading font-bold rounded-2xl shadow-lg transition-all">
+                    <i class="fas fa-home"></i> Kembali ke Halaman Utama
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL CHEATING WARNING: YELLOW CARD (PELANGGARAN PERTAMA) -->
+    <div id="modal-yellow-card" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center shadow-2xl border-8 border-yellow-400 animate-card">
+            <div class="w-24 h-36 bg-yellow-400 rounded-xl mx-auto mb-4 shadow-2xl flex flex-col items-center justify-center text-yellow-950 font-heading font-extrabold border-4 border-yellow-200 transform -rotate-6">
+                <i class="fas fa-exclamation-triangle text-4xl mb-1"></i>
+                <span class="text-xs">PERINGATAN 1</span>
+            </div>
+            <h3 class="font-heading text-2xl font-bold text-yellow-900 mb-2">KARTU KUNING!</h3>
+            <p class="text-sm text-gray-700 mb-6">
+                Anda terdeteksi berpindah tab atau meminimalkan aplikasi. Ini adalah <strong>pelanggaran pertama</strong>.<br>
+                <span class="text-xs text-red-600 font-bold block mt-2">Peringatan: Jika keluar layar 1 kali lagi, Anda akan didiskualifikasi (Kartu Merah)!</span>
+            </p>
+            <button onclick="closeYellowCardModal()" class="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-heading font-bold rounded-2xl shadow-lg transition-all transform active:scale-95">
+                Saya Mengerti & Lanjutkan
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CHEATING WARNING: RED CARD (PELANGGARAN KEDUAN -> RESET) -->
+    <div id="modal-red-card" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center shadow-2xl border-8 border-red-600 animate-card">
+            <div class="w-24 h-36 bg-red-600 rounded-xl mx-auto mb-4 shadow-2xl flex flex-col items-center justify-center text-white font-heading font-extrabold border-4 border-red-300 transform rotate-6 animate-bounce">
+                <i class="fas fa-ban text-4xl mb-1"></i>
+                <span class="text-xs">DISKUALIFIKASI</span>
+            </div>
+            <h3 class="font-heading text-2xl font-bold text-red-600 mb-2">KARTU MERAH!</h3>
+            <p class="text-sm text-gray-700 mb-6">
+                Anda telah melakukan <strong>2 kali pelanggaran</strong> karena meninggalkan layar ujian.<br>
+                Ujian Anda dibatalkan dan sistem akan mengulang kembali ke layar awal.
+            </p>
+            <button onclick="resetToLoginDueToCheating()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-heading font-bold rounded-2xl shadow-lg transition-all transform active:scale-95">
+                Kembali ke Layar Awal
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL MOBILE GRID NAV -->
+    <div id="modal-grid-mobile" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-indigo-400 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h4 class="font-heading font-bold text-indigo-900 text-lg">Navigasi Soal</h4>
+                <button onclick="toggleGridModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            </div>
+            <div id="question-grid-mobile" class="grid grid-cols-5 gap-2 overflow-y-auto p-1 flex-grow">
+                <!-- Grid buttons mobile -->
+            </div>
+            <div class="mt-4 pt-3 border-t">
+                <button onclick="toggleGridModal(); confirmSubmitModal();" class="w-full py-3 bg-rose-500 text-white font-bold rounded-2xl shadow">
+                    Selesai & Kirim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM SUBMIT -->
+    <div id="modal-confirm-submit" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border-4 border-indigo-400 animate-pop">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-indigo-950 mb-2">Kirim Jawaban?</h3>
+            <p class="text-sm text-gray-600 mb-4" id="submit-unanswered-text">
+                Pastikan Anda telah memeriksa seluruh nomor soal.
+            </p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 bg-gray-200 text-gray-700 font-bold rounded-2xl">
+                    Batal
+                </button>
+                <button onclick="submitAssessment()" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg">
+                    Ya, Kirim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-950 text-indigo-300 text-center py-3 text-xs mt-auto">
+        &copy; 2026 SMP Dhammasoka Banjarmasin - Interactive Assessment System
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           1. KONFIGURASI GOOGLE APPS SCRIPT (GAS) URL
+           ========================================================================== 
+           Petunjuk Guru:
+           Tempelkan URL Web App hasil Deploy Google Apps Script Anda pada variabel GAS_URL di bawah ini.
+        */
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbx8kJzp6r_IjXF_lPjuypiCDwf1Zbt91JGdlL6vt1rgdmVYc_KJ-c26O0Xm_4t6u-0m/exec"; // Ganti dengan URL deployment GAS Anda
+
+        // PASSCODE UNTUK MASUK EXAM
+        const SECRET_PASSCODE = "ATS9";
+
+        /* ==========================================================================
+           2. DATA SOAL & BACAAN (LENGKAP 50 SOAL ATS BAHASA INGGRIS KELAS IX)
+           ========================================================================== */
+        
+        // Objek Teks Pengantar / Bacaan Reusable
+        const CONTEXTS = {
+            dialogue1_3: {
+                title: "Read the dialogue for questions 1–3:",
+                text: "Randi: Did you hear that our school football team won the regional championship yesterday?\nSiti  : (1) ________! They were facing the toughest team in the city!\nRandi: I know, right? But guess what? Maya lost her phone during the celebration at the stadium.\nSiti  : Oh no, (2) ________. Has she tried calling it?\nRandi: Yes, but it's completely unreachable. By the way, we're going to help her look for it after school. You’re coming with us, aren't you?\nSiti  : (3) ________. I have to attend my guitar class at 3 PM."
+            },
+            text13_16: {
+                title: "Read the text for questions 13–16:",
+                text: "Recyclable waste sorting is crucial for preserving our environment. (13) ________, many households still mix organic and inorganic trash together. (14) ________, waste dumps become overflowed and toxic. If we start separating our waste at home, (15) ________ recycling centers can process materials (16) ________ than before."
+            },
+            announcement19_21: {
+                title: "The announcement is for no 19-21!",
+                text: "ATTENTION TO ALL GRADE 9 STUDENTS\nTo prepare for the high school admission process, our school will conduct a Computer-Based Literacy Assessment (AKM) trial next Tuesday at 08:00 AM in the Computer Lab.\nInstructions:\n1. Bring your registered student ID card.\n2. Arrive 15 minutes before the test begins.\n3. Mobile phones are strictly prohibited inside the lab.\nFor technical issues, please contact Mr. Hendra at the IT support desk."
+            },
+            recount22_24: {
+                title: "Read the recount text for questions 22–24:",
+                text: "Last Saturday, our class visited a local mangrove eco-park. At first, I thought it would be boring. However, once we boarded the wooden boats and rowed through the calm water channels, I was amazed. We planted around 50 young mangrove saplings along the muddy shore. It was tiring, but seeing the ecosystem thrive made me feel deeply satisfied."
+            },
+            venus25_27: {
+                title: "Read the dialogue for questions 25–27:",
+                text: "Tari   : Excuse me, Sir. Can you tell me more about the Venus Flytrap?\nBotanist: Certainly! It is a unique carnivorous plant native to subtropical wetlands. It catches its prey—mostly insects and arachnids—with a trapping structure formed by the terminal portion of each of the plant's leaves.\nTari   : How does it close so fast?\nBotanist: When an insect touches the tiny trigger hairs on the leaf inner surfaces twice within 20 seconds, the trap snaps shut immediately!"
+            },
+            bekantan28_32: {
+                title: "Read the report text for questions 28–32:",
+                text: "The Proboscis Monkey (Nasalis larvatus), locally known as Bekantan, is an arboreal Old World monkey endemic to the island of Borneo. It is easily identified by the male’s unusually large nose, which is believed to attract females and amplify warning calls.\nBekantans have reddish-brown fur on their backs and limbs, and light gray fur on their underparts. They possess webbed feet and toes, which make them exceptionally skilled swimmers. In fact, they are often seen crossing wide rivers or escaping predators like crocodiles by diving underwater.\nTheir diet mainly consists of young leaves, seeds, and unripe fruits. They cannot digest ripe fruits easily because the sugars can cause fatal abdominal bloating due to their complex chambered stomachs."
+            },
+            rafflesia33_38: {
+                title: "Read the text about Rafflesia Arnoldii for questions 33–38:",
+                text: "Rafflesia arnoldii is famous for producing the largest individual flower on Earth. It is an extraordinary parasitic plant found in the rainforests of Sumatra and Borneo. Unlike most plants, it has no leaves, roots, or true stems.\nThe flower consists of five thick, leathery petals that are reddish-brown with white spots. It can grow up to one meter in diameter and weigh up to 11 kilograms. When in bloom, Rafflesia emits a repulsive odor similar to rotting meat. This stench attracts carrion-seeking flies, which help pollinate the plant.\nRafflesia arnoldii has a very short blooming period, lasting only five to seven days before it wilts and turns into a black slimy mass. Because of habitat loss, this rare plant is currently classified as endangered."
+            },
+            komodo39_43: {
+                title: "Read the text about Komodo Dragons for questions 39–43:",
+                text: "Komodo dragons (Varanus komodoensis) are the largest living species of lizard in the world. They are native to the Indonesian islands of Komodo, Rinca, Flores, and Gili Motang.\nThese reptiles can grow up to 3 meters in length and weigh over 70 kilograms. They have long, flat heads with rounded snouts, scaly skin, bowed legs, and huge, muscular tails. Their yellow tongues are deeply forked, allowing them to sense scent airborne chemicals up to several kilometers away.\nKomodo dragons are carnivores and apex predators. They hunt by ambushing prey such as deer, pigs, and water buffaloes. Their saliva contains toxic proteins that inhibit blood clotting and cause rapid shock in their victims.\nDue to human encroachment and climate change, Komodo dragons are protected within Komodo National Park to prevent their extinction."
+            },
+            pitcher44_47: {
+                title: "Read the conversation for questions 44–47:",
+                text: "Ananda : Look at this infographics poster about pitcher plants (Nepenthes)! (44) ________ amazing plant!\nBambang: Wow, you're right. I didn't know they could digest small frogs and insects! Pitcher plants are found in poor-nutrient soil, (45) ________?\nAnanda : Yes, they are! That's why they trap insects to get nutrients like nitrogen.\nBambang: The inner walls of the pitcher (46) ________ with a slippery wax coating so prey slides down into the digestive fluid.\nAnanda : Exactly! We should share this poster on our class social media page so everyone learns about native Indonesian flora.\nBambang: (47) ________. It will raise awareness about environmental preservation."
+            }
+        };
+
+        // Master Array 50 Questions
+        const QUESTIONS = [
+            // 1-3
+            { id: 1, context: CONTEXTS.dialogue1_3, q: "1. Which expression best completes blank (1) to show disbelief?", options: ["I couldn't agree more", "What a terrible news", "You must be joking", "I really hope so"], ans: "C" },
+            { id: 2, context: CONTEXTS.dialogue1_3, q: "2. Which expression best completes blank (2) to express sympathy?", options: ["that's fantastic", "I'm so sorry to hear that", "what a relief", "I don't think that's true"], ans: "B" },
+            { id: 3, context: CONTEXTS.dialogue1_3, q: "3. Which expression best completes blank (3) to express polite disagreement or refusal?", options: ["I'd love to, but I'm afraid I can't", "Absolutely, count me in", "I wish you good luck", "That's a great idea"], ans: "A" },
+            
+            // 4-12
+            { id: 4, q: "4. Dito: \"I'm taking the final English speaking test tomorrow morning.\"\nRina: \"________! I know you've practiced really hard.\"", options: ["What a disappointment", "I hope you get the best result", "I doubt you can make it", "Congratulations on your victory"], ans: "B" },
+            { id: 5, q: "5. Bagas: \"I think reducing plastic packaging in our school canteen will significantly help the environment.\"\nLestari: \"________. Plastic waste has been clogging our school drains lately.\"", options: ["I don't think so", "I totally agree with you", "That is complete nonsense", "I am afraid I disagree"], ans: "B" },
+            { id: 6, q: "6. Fajar: \"What color is your new hoodie?\"\nKiki: \"It's not pure red, but rather ________.\"", options: ["reddish", "reddest", "redden", "redly"], ans: "A" },
+            { id: 7, q: "7. \"Don't act so childish when you don't get your way!\"\nThe word childish in the sentence means showing behavior that is ________.", options: ["mature and responsible", "immature and silly like a child", "very brave and strong", "helpful and polite"], ans: "B" },
+            { id: 8, q: "8. Before submitting your digital essay to the teacher, make sure to ________ it carefully to fix any spelling errors.", options: ["look up", "check out", "look over", "turn off"], ans: "C" },
+            { id: 9, q: "9. Dian: \"Why did the principal call off the school parade?\"\nEko: \"Because of the sudden storm.\"\nWhat does \"call off\" mean in the context above?", options: ["Postpone to another day", "Cancel completely", "Announce proudly", "Continue despite the weather"], ans: "B" },
+            { id: 10, q: "10. You are coming to the library group study session, ________?", options: ["aren't you", "don't you", "won't you", "haven't you"], ans: "A" },
+            { id: 11, q: "11. Our science teacher didn't give us homework yesterday, ________?", options: ["didn't he", "did he", "does he", "wasn't he"], ans: "B" },
+            { id: 12, q: "12. The students have already finished their poster projects, ________?", options: ["haven't they", "don't they", "didn't they", "aren't they"], ans: "A" },
+            
+            // 13-16
+            { id: 13, context: CONTEXTS.text13_16, q: "13. Which transition signal best fits blank (13)?", options: ["However", "Therefore", "In addition", "For instance"], ans: "A" },
+            { id: 14, context: CONTEXTS.text13_16, q: "14. Which transition signal best fits blank (14)?", options: ["As a result", "On the other hand", "Although", "Even though"], ans: "A" },
+            { id: 15, context: CONTEXTS.text13_16, q: "15. Which transition signal best fits blank (15)?", options: ["because", "then", "but", "despite"], ans: "B" },
+            { id: 16, context: CONTEXTS.text13_16, q: "16. Which comparative form best completes blank (16)?", options: ["more efficient", "efficienter", "most efficient", "as efficient"], ans: "A" },
+
+            // 17-18
+            { id: 17, q: "17. \"The math quiz today was extremely difficult, but Nina managed to get a perfect score.\"\nThe word extremely emphasizes that the quiz was ________.", options: ["slightly hard", "not hard at all", "very high in difficulty", "moderately challenging"], ans: "C" },
+            { id: 18, q: "18. Laptop A weighs 1.2 kg and costs IDR 7,000,000. Laptop B weighs 1.8 kg and costs IDR 5,000,000.\nBased on the information above, which statement is correct?", options: ["Laptop A is heavier than Laptop B.", "Laptop B is more expensive than Laptop A.", "Laptop A is lighter and more expensive than Laptop B.", "Laptop B is as light as Laptop A."], ans: "C" },
+
+            // 19-21 (Announcement Image)
+            { id: 19, context: CONTEXTS.announcement19_21, img: "https://placehold.co/600x350/1e3a8a/ffffff?text=ANNOUNCEMENT+TO+ALL+GRADE+9+STUDENTS", q: "19. What is the main purpose of the text?", options: ["To invite students to join an IT club.", "To inform Grade 9 students about an assessment trial.", "To forbid students from using computers.", "To promote high school admission programs."], ans: "B" },
+            { id: 20, context: CONTEXTS.announcement19_21, img: "https://placehold.co/600x350/1e3a8a/ffffff?text=ANNOUNCEMENT+TO+ALL+GRADE+9+STUDENTS", q: "20. What must students bring to the test?", options: ["Their smartphones", "Their registered student ID card", "Printed test results", "A letter from their parents"], ans: "B" },
+            { id: 21, context: CONTEXTS.announcement19_21, img: "https://placehold.co/600x350/1e3a8a/ffffff?text=ANNOUNCEMENT+TO+ALL+GRADE+9+STUDENTS", q: "21. What can be inferred if a student brings a mobile phone to the Computer Lab?", options: ["The student will be allowed to use it for calculation.", "The student will be breaking the rules stated in the announcement.", "Mr. Hendra will help the student store data on the phone.", "The test will be delayed for everyone."], ans: "B" },
+
+            // 22-24
+            { id: 22, context: CONTEXTS.recount22_24, q: "22. How did the writer's feeling change throughout the trip?", options: ["From excited to disappointed", "From bored to amazed and satisfied", "From amazed to exhausted and angry", "From nervous to confused"], ans: "B" },
+            { id: 23, context: CONTEXTS.recount22_24, q: "23. Which action verb in the text shows the activity done to help the mangrove environment?", options: ["thought", "rowed", "planted", "satisfied"], ans: "C" },
+            { id: 24, context: CONTEXTS.recount22_24, q: "24. \"At first, I thought it would be boring. However, once we boarded...\"\nThe underlined word functions to show a ________.", options: ["conclusion", "contrast in the writer's view", "chronological order", "cause-and-effect relationship"], ans: "B" },
+
+            // 25-27 (Venus Flytrap Image)
+            { id: 25, context: CONTEXTS.venus25_27, img: "https://placehold.co/600x350/15803d/ffffff?text=VENUS+FLYTRAP+INFOGRAPHIC", q: "25. What information is Tari seeking from the botanist?", options: ["How to sell carnivorous plants.", "Details about the Venus Flytrap and how it traps insects.", "The location of subtropical forests in Indonesia.", "How to spray pesticide on garden leaves."], ans: "B" },
+            { id: 26, context: CONTEXTS.venus25_27, img: "https://placehold.co/600x350/15803d/ffffff?text=VENUS+FLYTRAP+INFOGRAPHIC", q: "26. Identify the noun phrase in the phrase: \"a unique carnivorous plant native to subtropical wetlands\".", options: ["unique carnivorous", "native to", "a unique carnivorous plant", "subtropical wetlands native"], ans: "C" },
+            { id: 27, context: CONTEXTS.venus25_27, img: "https://placehold.co/600x350/15803d/ffffff?text=VENUS+FLYTRAP+INFOGRAPHIC", q: "27. The trap of a Venus Flytrap snaps shut when ________.", options: ["water drops fall on the stem", "an insect touches the trigger hairs twice within 20 seconds", "sunlight touches the outer surface of the leaf", "the soil becomes too dry"], ans: "B" },
+
+            // 28-32 (Bekantan Image)
+            { id: 28, context: CONTEXTS.bekantan28_32, img: "https://placehold.co/600x350/b45309/ffffff?text=BEKANTAN+(PROBOSCIS+MONKEY)", q: "28. What is the main social function of the text above?", options: ["To entertain readers with a story about a funny monkey.", "To report general factual information about the Proboscis Monkey.", "To persuade people to keep Bekantans as pets.", "To describe a specific Bekantan named in a zoo."], ans: "B" },
+            { id: 29, context: CONTEXTS.bekantan28_32, img: "https://placehold.co/600x350/b45309/ffffff?text=BEKANTAN+(PROBOSCIS+MONKEY)", q: "29. Why do male Bekantans have large noses?", options: ["To help them smell unripe fruits from far away.", "To breathe easily underwater while swimming.", "To attract females and amplify warning calls.", "To scare away small insects in the tree canopy."], ans: "C" },
+            { id: 30, context: CONTEXTS.bekantan28_32, img: "https://placehold.co/600x350/b45309/ffffff?text=BEKANTAN+(PROBOSCIS+MONKEY)", q: "30. Why are Bekantans unable to eat ripe fruits freely?", options: ["Their teeth are too soft to chew them.", "Ripe fruits are toxic to their skin.", "Sugar in ripe fruits causes dangerous abdominal bloating.", "Ripe fruits contain seeds that harm their webbed feet."], ans: "C" },
+            { id: 31, context: CONTEXTS.bekantan28_32, q: "31. \"They are often seen crossing wide rivers by local villagers.\"\nWhich sentence has the same passive structure meaning?", options: ["Local villagers often see them crossing wide rivers.", "Local villagers are seeing them cross wide rivers.", "Local villagers saw them crossing wide rivers yesterday.", "Local villagers will see them cross wide rivers."], ans: "A" },
+            { id: 32, q: "32. Active: \"Predators attack young monkeys in the forest.\"\nPassive: \"Young monkeys ________ by predators in the forest.\"", options: ["are attacked", "were attacked", "are attacking", "have attacked"], ans: "A" },
+
+            // 33-38 (Rafflesia Image)
+            { id: 33, context: CONTEXTS.rafflesia33_38, img: "https://placehold.co/600x350/991b1b/ffffff?text=RAFFLESIA+ARNOLDII", q: "33. Paragraph 1 of the text above functions as the ________ of the report text.", options: ["General Classification", "Identification", "Description", "Re-orientation"], ans: "A" },
+            { id: 34, context: CONTEXTS.rafflesia33_38, img: "https://placehold.co/600x350/991b1b/ffffff?text=RAFFLESIA+ARNOLDII", q: "34. Paragraphs 2 and 3 provide detailed factual aspects of the plant. In a report text structure, this part is called ________.", options: ["Re-orientation", "Description", "Complication", "Recommendation"], ans: "B" },
+            { id: 35, context: CONTEXTS.rafflesia33_38, q: "35. \"Unlike most plants, Rafflesia arnoldii ________ no leaves, roots, or true stems.\"\nThe correct word to fill in the blank is ________.", options: ["have", "has", "having", "is had"], ans: "B" },
+            { id: 36, context: CONTEXTS.rafflesia33_38, img: "https://placehold.co/600x350/991b1b/ffffff?text=RAFFLESIA+ARNOLDII", q: "36. Why does the flower emit a foul odor like rotting meat?", options: ["To defend itself against herbivores.", "To attract flies that assist in pollination.", "To warn humans not to pick its petals.", "To absorb nutrients directly from the air."], ans: "B" },
+            { id: 37, context: CONTEXTS.rafflesia33_38, q: "37. In the sentence \"This stench attracts carrion-seeking flies\", the phrase in bold acts as a noun phrase modified by an adjective participle. What is the head noun?", options: ["Carrion", "Seeking", "Flies", "Attracts"], ans: "C" },
+            { id: 38, context: CONTEXTS.rafflesia33_38, q: "38. If you were creating a conservation poster for Rafflesia arnoldii, which slogan would be most appropriate?", options: ["\"Plant Rafflesia in your backyard for a fresh floral scent!\"", "\"Protect Rainforest Habitat: Save the World's Largest Flower from Extinction!\"", "\"Cut Rafflesia Flowers to Make Herbal Tea!\"", "\"Keep Rafflesia in small flower pots at home!\""], ans: "B" },
+
+            // 39-43 (Komodo Image)
+            { id: 39, context: CONTEXTS.komodo39_43, img: "https://placehold.co/600x350/065f46/ffffff?text=KOMODO+DRAGON+(VARANUS+KOMODOENSIS)", q: "39. Report texts mostly use Simple Present Tense because they tell ________.", options: ["past personal experiences", "general truths and scientific facts", "future plans and goals", "imaginary events"], ans: "B" },
+            { id: 40, context: CONTEXTS.komodo39_43, img: "https://placehold.co/600x350/065f46/ffffff?text=KOMODO+DRAGON+(VARANUS+KOMODOENSIS)", q: "40. \"Komodo dragons are protected within Komodo National Park.\"\nWhat is the main reason for putting the dragons in protection?", options: ["To make them perform in animal shows.", "To prevent their population from extinction caused by threats.", "To export them to international zoos.", "To train them to live with humans."], ans: "B" },
+            { id: 41, context: CONTEXTS.komodo39_43, q: "41. \"Their saliva contains toxic proteins that inhibit blood clotting...\"\nThe word inhibit is closest in meaning to ________.", options: ["accelerate", "slow down or stop", "clean up", "produce"], ans: "B" },
+            { id: 42, context: CONTEXTS.komodo39_43, img: "https://placehold.co/600x350/065f46/ffffff?text=KOMODO+DRAGON+(VARANUS+KOMODOENSIS)", q: "42. Which physical feature helps Komodo dragons smell prey from miles away?", options: ["Their sharp claws", "Their deeply forked yellow tongue", "Their muscular tail", "Their scaly skin"], ans: "B" },
+            { id: 43, context: CONTEXTS.komodo39_43, q: "43. Suppose you are presenting a report on endangered fauna. Which set of facts MUST be included in your presentation slides?", options: ["Habitat location, physical characteristics, diet, and conservation status.", "Fictional stories, moral values, climax, and resolution.", "Materials needed, step-by-step instructions, and result.", "Personal opinions, price of ticket to the zoo, and bus schedule."], ans: "A" },
+
+            // 44-47 (Pitcher Plant Image)
+            { id: 44, context: CONTEXTS.pitcher44_47, img: "https://placehold.co/600x350/4338ca/ffffff?text=PITCHER+PLANT+(NEPENTHES)", q: "44. Which exclamation completes blank (44) correctly?", options: ["What an", "How", "What a", "How an"], ans: "A" },
+            { id: 45, context: CONTEXTS.pitcher44_47, img: "https://placehold.co/600x350/4338ca/ffffff?text=PITCHER+PLANT+(NEPENTHES)", q: "45. Which tag question completes blank (45) correctly?", options: ["don't they", "aren't they", "haven't they", "isn't it"], ans: "B" },
+            { id: 46, context: CONTEXTS.pitcher44_47, img: "https://placehold.co/600x350/4338ca/ffffff?text=PITCHER+PLANT+(NEPENTHES)", q: "46. Which passive verb form completes blank (46) correctly?", options: ["is covered", "are covered", "cover", "covered"], ans: "B" },
+            { id: 47, context: CONTEXTS.pitcher44_47, q: "47. Which expression of agreement completes blank (47)?", options: ["I couldn't agree more", "I doubt that's a good plan", "I completely disagree", "What a pity"], ans: "A" },
+
+            // 48-50
+            { id: 48, q: "48. The wildlife rescue team had to look after the injured baby orangutan until it recovered fully.\nThe phrasal verb look after means ________.", options: ["search for", "examine carefully", "take care of", "ignore completely"], ans: "C" },
+            { id: 49, q: "49. Cassowary speed: 50 km/h | Ostrich speed: 70 km/h\nWhich sentence correctly compares both birds?", options: ["Cassowaries run faster than ostriches.", "Ostriches run faster than cassowaries.", "Cassowaries are as fast as ostriches.", "Ostriches are the slowest birds on earth."], ans: "B" },
+            { id: 50, q: "50. Which of the following elements is LEAST relevant when designing an informative report poster about \"Saving the Sumatran Elephant\"?", options: ["Clear high-resolution photographs of Sumatran Elephants in their natural habitat.", "Bullet points describing their diet, physical traits, and main threats (poaching & habitat loss).", "A short fictional narrative story about a talking elephant visiting a shopping mall.", "A call-to-action slogan urging students to support rainforest conservation."], ans: "C" }
+        ];
+
+        /* ==========================================================================
+           3. APPLICATION STATE MANAGEMENT
+           ========================================================================== */
+        let currentUser = { name: "", class: "" };
+        let userAnswers = {}; // { 1: 'A', 2: 'B', ... }
+        let currentQuestionIdx = 0;
+        let violationCount = 0;
+        let timerInterval = null;
+        let timeRemaining = 90 * 60; // 90 menit = 5400 detik
+        let examSubmitted = false;
+
+        // Anti-cheating Throttling Flags
+        let isViolationModalOpen = false;
+        let lastViolationTime = 0;
+
+        /* ==========================================================================
+           4. EVENT LISTENERS & CHEATING DETECTION (STRICT STEP BY STEP)
+           ========================================================================== */
+        window.onload = function() {
+            setupAntiCheating();
+            renderQuestionGrids();
+        };
+
+        function setupAntiCheating() {
+            // Trigger 1: Tab Change / Minimize (visibilitychange)
+            document.addEventListener("visibilitychange", function() {
+                if (document.hidden && shouldTriggerViolation()) {
+                    triggerViolation();
+                }
+            });
+
+            // Trigger 2: Focus Loss (Window Blur)
+            window.addEventListener("blur", function() {
+                if (shouldTriggerViolation()) {
+                    triggerViolation();
+                }
+            });
+
+            // Trigger 3: Key combination prevention (Alt+Tab, Ctrl+Tab, F12)
+            window.addEventListener("keydown", function(e) {
+                if (e.key === "Tab" || e.altKey || (e.ctrlKey && e.key !== 'r') || e.key === "F12") {
+                    if (shouldTriggerViolation()) {
+                        triggerViolation();
+                    }
+                }
+            });
+        }
+
+        function shouldTriggerViolation() {
+            const now = Date.now();
+            // Hanya berlaku jika ujian sedang berjalan, nama terisi, modal tidak terbuka, dan lewat dari cooldown 1.5s
+            if (!examSubmitted && 
+                currentUser.name !== "" && 
+                !isViolationModalOpen && 
+                (now - lastViolationTime > 1500)) {
+                return true;
+            }
+            return false;
+        }
+
+        function triggerViolation() {
+            lastViolationTime = Date.now();
+            violationCount++;
+            isViolationModalOpen = true;
+
+            // Update UI Badge di Header
+            document.getElementById('violation-badge').classList.remove('hidden');
+            document.getElementById('violation-count-text').innerText = violationCount;
+
+            if (violationCount === 1) {
+                // Pelanggaran Pertama -> Kartu Kuning (TIDAK RESET)
+                document.getElementById('modal-yellow-card').classList.remove('hidden');
+            } else if (violationCount >= 2) {
+                // Pelanggaran Kedua -> Kartu Merah (RESET GAMING)
+                document.getElementById('modal-yellow-card').classList.add('hidden'); // Tutup modal kuning jika terbuka
+                document.getElementById('modal-red-card').classList.remove('hidden');
+            }
+        }
+
+        function closeYellowCardModal() {
+            document.getElementById('modal-yellow-card').classList.add('hidden');
+            // Buka kembali status throttling setelah 500ms dari tombol ditutup
+            setTimeout(() => {
+                isViolationModalOpen = false;
+            }, 500);
+        }
+
+        function resetToLoginDueToCheating() {
+            // Sembunyikan Modal Kartu Merah
+            document.getElementById('modal-red-card').classList.add('hidden');
+            
+            // Reset Semua State Aplikasi Ujian
+            clearInterval(timerInterval);
+            currentUser = { name: "", class: "" };
+            userAnswers = {};
+            currentQuestionIdx = 0;
+            violationCount = 0;
+            timeRemaining = 90 * 60;
+            examSubmitted = false;
+            isViolationModalOpen = false;
+
+            // Reset Tampilan Form Login
+            document.getElementById('form-login').reset();
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('violation-badge').classList.add('hidden');
+
+            // Switch Screen Kembali ke Layar Login
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('header-info').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        /* ==========================================================================
+           5. LOGIN & EXAM START LOGIC
+           ========================================================================== */
+        function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value.trim();
+            const cls = document.getElementById('input-class').value;
+            const passcode = document.getElementById('input-passcode').value.trim();
+            const errorBox = document.getElementById('login-error');
+
+            if (passcode !== SECRET_PASSCODE) {
+                errorBox.classList.remove('hidden');
+                document.getElementById('login-error-text').innerText = "Passcode salah! Silakan tanyakan ke pengawas.";
+                return;
+            }
+
+            errorBox.classList.add('hidden');
+            currentUser = { name: name, class: cls };
+
+            // Update Header Info UI
+            document.getElementById('user-display-name').innerText = currentUser.name;
+            document.getElementById('user-display-class').innerText = "Kelas " + currentUser.class;
+            document.getElementById('header-info').classList.remove('hidden');
+
+            // Switch Screen
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            // Start Timer & Render Question 1
+            startTimer();
+            loadQuestion(0);
+        }
+
+        /* ==========================================================================
+           6. TIMER LOGIC
+           ========================================================================== */
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (!isViolationModalOpen) {
+                    timeRemaining--;
+                    updateTimerDisplay();
+
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        alert("Waktu ujian telah habis! Jawaban Anda akan otomatis dikirim.");
+                        submitAssessment();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timer-display').innerText = formatted;
+        }
+
+        /* ==========================================================================
+           7. QUESTION NAVIGATION & DISPLAY
+           ========================================================================== */
+        function renderQuestionGrids() {
+            const desktopGrid = document.getElementById('question-grid-desktop');
+            const mobileGrid = document.getElementById('question-grid-mobile');
+            desktopGrid.innerHTML = '';
+            mobileGrid.innerHTML = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                const btnD = document.createElement('button');
+                btnD.id = `grid-btn-d-${idx}`;
+                btnD.className = 'w-9 h-9 rounded-xl font-bold text-xs flex items-center justify-center transition-all border border-gray-300 bg-gray-100 hover:bg-indigo-100 text-gray-700';
+                btnD.innerText = idx + 1;
+                btnD.onclick = () => { loadQuestion(idx); };
+
+                const btnM = btnD.cloneNode(true);
+                btnM.id = `grid-btn-m-${idx}`;
+                btnM.onclick = () => { loadQuestion(idx); toggleGridModal(); };
+
+                desktopGrid.appendChild(btnD);
+                mobileGrid.appendChild(btnM);
+            });
+        }
+
+        function loadQuestion(idx) {
+            currentQuestionIdx = idx;
+            const qData = QUESTIONS[idx];
+
+            // Update Current Question Counter
+            document.getElementById('current-q-num').innerText = idx + 1;
+
+            // Context (Reading/Dialogue)
+            const contextBox = document.getElementById('question-context-box');
+            if (qData.context) {
+                document.getElementById('question-context-title').innerText = qData.context.title;
+                document.getElementById('question-context-body').innerText = qData.context.text;
+                contextBox.classList.remove('hidden');
+            } else {
+                contextBox.classList.add('hidden');
+            }
+
+            // Image
+            const imgBox = document.getElementById('question-image-box');
+            const imgElem = document.getElementById('question-image');
+            if (qData.img) {
+                imgElem.src = qData.img;
+                imgBox.classList.remove('hidden');
+            } else {
+                imgBox.classList.add('hidden');
+            }
+
+            // Question Text
+            document.getElementById('question-text').innerText = qData.q;
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((optText, optIdx) => {
+                const key = optionKeys[optIdx];
+                const isSelected = userAnswers[qData.id] === key;
+
+                const optBtn = document.createElement('button');
+                optBtn.type = 'button';
+                optBtn.className = `w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center justify-between ${
+                    isSelected 
+                    ? 'border-indigo-600 bg-indigo-50 text-indigo-950 font-bold shadow-md' 
+                    : 'border-gray-200 bg-white hover:border-indigo-300 text-gray-800 font-semibold'
+                }`;
+
+                optBtn.onclick = () => selectOption(qData.id, key);
+
+                optBtn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                            isSelected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
+                        }">${key}</span>
+                        <span class="text-sm md:text-base">${optText}</span>
+                    </div>
+                    ${isSelected ? '<i class="fas fa-check-circle text-indigo-600 text-lg"></i>' : ''}
+                `;
+
+                optionsContainer.appendChild(optBtn);
+            });
+
+            // Navigation Buttons State
+            document.getElementById('btn-prev').disabled = (idx === 0);
+            document.getElementById('btn-prev').classList.toggle('opacity-50', idx === 0);
+
+            if (idx === QUESTIONS.length - 1) {
+                document.getElementById('btn-next').innerHTML = 'Periksa Selesai <i class="fas fa-check"></i>';
+            } else {
+                document.getElementById('btn-next').innerHTML = 'Selanjutnya <i class="fas fa-arrow-right"></i>';
+            }
+
+            // Highlight Grid Buttons
+            updateGridStyles();
+        }
+
+        function selectOption(qId, letterKey) {
+            userAnswers[qId] = letterKey;
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function navigateQuestion(direction) {
+            const nextIdx = currentQuestionIdx + direction;
+            if (nextIdx >= 0 && nextIdx < QUESTIONS.length) {
+                loadQuestion(nextIdx);
+            }
+        }
+
+        function updateGridStyles() {
+            QUESTIONS.forEach((q, idx) => {
+                const btnD = document.getElementById(`grid-btn-d-${idx}`);
+                const btnM = document.getElementById(`grid-btn-m-${idx}`);
+
+                const isAnswered = userAnswers[q.id] !== undefined;
+                const isActive = idx === currentQuestionIdx;
+
+                let classes = "w-9 h-9 rounded-xl font-bold text-xs flex items-center justify-center transition-all border ";
+
+                if (isActive) {
+                    classes += "bg-indigo-600 text-white border-indigo-700 shadow-md ring-2 ring-indigo-300";
+                } else if (isAnswered) {
+                    classes += "bg-emerald-500 text-white border-emerald-600 shadow-sm";
+                } else {
+                    classes += "bg-gray-100 text-gray-700 border-gray-300 hover:bg-indigo-100";
+                }
+
+                if (btnD) btnD.className = classes;
+                if (btnM) btnM.className = classes;
+            });
+        }
+
+        function toggleGridModal() {
+            const modal = document.getElementById('modal-grid-mobile');
+            modal.classList.toggle('hidden');
+        }
+
+        /* ==========================================================================
+           8. SUBMISSION & RESULT CALCULATION
+           ========================================================================== */
+        function confirmSubmitModal() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const total = QUESTIONS.length;
+            const unanswered = total - answeredCount;
+
+            const textElem = document.getElementById('submit-unanswered-text');
+            if (unanswered > 0) {
+                textElem.innerHTML = `Masih ada <span class="font-bold text-rose-600">${unanswered} soal</span> yang belum dijawab. Yakin ingin menyelesaikan sekarang?`;
+            } else {
+                textElem.innerText = "Anda telah menjawab seluruh 50 soal. Kirim hasil ujian sekarang?";
+            }
+
+            document.getElementById('modal-confirm-submit').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm-submit').classList.add('hidden');
+        }
+
+        function submitAssessment() {
+            closeConfirmModal();
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate Score
+            let correctCount = 0;
+            let wrongCount = 0;
+            let wrongQuestionNumbers = [];
+
+            QUESTIONS.forEach(q => {
+                const userAns = userAnswers[q.id];
+                if (userAns === q.ans) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                    wrongQuestionNumbers.push(q.id);
+                }
+            });
+
+            // Score Scale 0-100
+            const finalScore = Math.round((correctCount / QUESTIONS.length) * 100);
+
+            // Render Result UI
+            document.getElementById('res-name').innerText = currentUser.name;
+            document.getElementById('res-class').innerText = "Kelas " + currentUser.class;
+            document.getElementById('res-time').innerText = new Date().toLocaleTimeString('id-ID');
+
+            document.getElementById('res-score').innerText = finalScore;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-wrong').innerText = wrongCount;
+            document.getElementById('res-violations').innerText = violationCount;
+
+            // Render Wrong Questions Box
+            const wrongBox = document.getElementById('wrong-questions-box');
+            if (wrongQuestionNumbers.length > 0) {
+                wrongBox.innerHTML = `Soal yang salah: <span class="font-bold text-rose-600">${wrongQuestionNumbers.join(', ')}</span>`;
+            } else {
+                wrongBox.innerHTML = `<span class="font-bold text-emerald-600"><i class="fas fa-star mr-1"></i> Luar Biasa! Semua jawaban Anda benar (Skor Perfect 100).</span>`;
+            }
+
+            // Switch Screen
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('header-info').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Send Data to GAS
+            sendScoreToGAS({
+                timestamp: new Date().toISOString(),
+                nama: currentUser.name,
+                kelas: currentUser.class,
+                salah: wrongCount,
+                benar: correctCount,
+                skor: finalScore,
+                pelanggaran: violationCount,
+                salah_no: wrongQuestionNumbers.join(', ')
+            });
+        }
+
+        /* ==========================================================================
+           9. GOOGLE APPS SCRIPT INTEGRATION
+           ========================================================================== */
+        function sendScoreToGAS(payloadData) {
+            const statusBox = document.getElementById('gas-status');
+
+            if (!GAS_URL || GAS_URL.includes("XXXXXXXXXXXXXXX")) {
+                statusBox.className = "mb-6 p-3 rounded-xl text-center font-bold text-sm bg-amber-50 border border-amber-200 text-amber-800";
+                statusBox.innerHTML = "<i class='fas fa-exclamation-triangle mr-2'></i> Mode Demo: URL GAS belum dikonfigurasi. Data tersimpan di tampilan lokal ini.";
+                return;
+            }
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payloadData)
+            })
+            .then(() => {
+                statusBox.className = "mb-6 p-3 rounded-xl text-center font-bold text-sm bg-emerald-50 border border-emerald-200 text-emerald-800";
+                statusBox.innerHTML = "<i class='fas fa-check-circle mr-2'></i> Berhasil dikirim & dicatat ke Google Spreadsheet Guru!";
+            })
+            .catch(err => {
+                console.error("Gagal mengirim ke GAS:", err);
+                statusBox.className = "mb-6 p-3 rounded-xl text-center font-bold text-sm bg-rose-50 border border-rose-200 text-rose-800";
+                statusBox.innerHTML = "<i class='fas fa-times-circle mr-2'></i> Terjadi kendala koneksi saat mengirim ke Google Apps Script.";
+            });
+        }
+    </script>
+</body>
+</html>
